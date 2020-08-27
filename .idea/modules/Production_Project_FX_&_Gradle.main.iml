@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="CheckStyle-IDEA-Module">
+    <option name="configuration">
+      <map />
+    </option>
+  </component>
+  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="io.github.orellanadani12" externalSystemModuleType="sourceSet" externalSystemModuleVersion="1.0" linkedProjectId="Production Project FX &amp; Gradle:main" linkedProjectPath="$MODULE_DIR$/../.." rootProjectPath="$MODULE_DIR$/../.." />
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../build/classes/java/main" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-fxml:win:11.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-controls:11.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-controls:win:11.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-graphics:11.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-graphics:win:11.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-base:11.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-base:win:11.0.2" level="project" />
+  </component>
+</module>
