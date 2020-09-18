@@ -49,9 +49,9 @@
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <TextField promptText="Product Name" GridPane.columnIndex="1" />
-                        <TextField promptText="Manufacturer" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtProductName" promptText="Product Name" GridPane.columnIndex="1" />
+                        <TextField fx:id="txtManufacturer" promptText="Manufacturer" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ChoiceBox fx:id="cbItemType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                   <Button fx:id="productButton" layoutX="58.0" layoutY="247.0" mnemonicParsing="false" onAction="#addProduct" text="Add Product" />
@@ -86,7 +86,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <ComboBox layoutX="148.0" layoutY="53.0" prefWidth="150.0" />
+                  <ComboBox fx:id="cmbQuantity" layoutX="148.0" layoutY="53.0" prefWidth="150.0" />
                   <Button fx:id="recordButton" layoutX="122.0" layoutY="198.0" mnemonicParsing="false" onAction="#recordProduction" text="Record Production" />
                </children></AnchorPane>
         </content>
