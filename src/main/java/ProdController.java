@@ -39,10 +39,10 @@ public class ProdController {
   public void initialize() {
 
     //options for choiceBox
-    cbItemType.getItems().add("AUDIO");
-    cbItemType.getItems().add("VISUAL");
-    cbItemType.getItems().add("AUDIO_MOBILE");
-    cbItemType.getItems().add("VISUAL_MOBILE");
+    for(ItemType item : ItemType.values()) {
+      cbItemType.getItems().add(item.code);
+    }
+    cbItemType.getSelectionModel().selectFirst();
 
     for (int count = 1; count <= 10; count++) {
       cmbQuantity.getItems().add(String.valueOf(count));

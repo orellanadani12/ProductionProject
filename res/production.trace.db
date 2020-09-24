@@ -470,7 +470,7 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/ffa
 	... 48 more
 2020-09-17 15:57:14 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "ITEMTYPE" not found; SQL statement:
-INSERT INTO Product(item_type, manufacturer, product_name ) VALUES ( itemType, manufacturer, productName ) [42122-199]
+INSERT INTO Product(item_type, manufacturer, product_name ) VALUES ( ItemType, manufacturer, productName ) [42122-199]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:451)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
 	at org.h2.message.DbException.get(DbException.java:205)
@@ -646,7 +646,7 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.lang.Thread.run(Thread.java:834)
 2020-09-17 16:13:11 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "ITEMTYPE" not found; SQL statement:
-INSERT INTO Product(item_type, manufacturer, product_name ) VALUES ( itemType, manufacturer, productName ) [42122-199]
+INSERT INTO Product(item_type, manufacturer, product_name ) VALUES ( ItemType, manufacturer, productName ) [42122-199]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:451)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
 	at org.h2.message.DbException.get(DbException.java:205)
@@ -713,7 +713,7 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.lang.Thread.run(Thread.java:834)
 2020-09-17 16:49:37 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "ITEMTYPE" not found; SQL statement:
-INSERT INTO product(itemType, manufacturer, productName) [42122-199]
+INSERT INTO product(ItemType, manufacturer, productName) [42122-199]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:451)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
 	at org.h2.message.DbException.get(DbException.java:205)
