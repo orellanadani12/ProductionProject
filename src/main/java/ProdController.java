@@ -75,22 +75,26 @@ public class ProdController {
       String manufacturer = txtManufacturer.getText();
       String itemType = cbItemType.getValue();
 
-      String insertSql = "INSERT INTO Product(item_type, manufacturer, product_name ) "
-          + "VALUES ( '" + itemType + "', '" + manufacturer + "', '" + productName + "')";
+      final String sql = "INSERT INTO Product(item_type, manufacturer, product_name ) "
+          + "VALUES ( ?, ?, ?)";
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setString(1, itemType);
+      ps.setString(2, manufacturer);
+      ps.setString(3, productName);
 
-      stmt.executeUpdate(insertSql);
+      ps.executeUpdate();
 
-      String sql = " SELECT item_type, manufacturer, product_name"
+      String selectSql = "Select Product(item_type, manufacturer, product_name )"
           + " FROM PRODUCT";
+      ResultSet rs = stmt.executeQuery(selectSql);
 
-      ResultSet rs = stmt.executeQuery(sql);
-
+// while loop to all data in DB
       while (rs.next()) {
         System.out.println(rs.getString(1));
         System.out.println(rs.getString(2));
         System.out.println(rs.getString(3));
       }
-
+      ;
       // STEP 4: Clean-up environment
       stmt.close();
       conn.close();
