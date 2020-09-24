@@ -84,8 +84,8 @@ public class ProdController {
 
       ps.executeUpdate();
 
-      String selectSql = "Select Product(item_type, manufacturer, product_name )"
-          + " FROM PRODUCT";
+      String selectSql = "Select item_type, manufacturer, product_name"
+          + " FROM Product";
       ResultSet rs = stmt.executeQuery(selectSql);
 
 // while loop to all data in DB
