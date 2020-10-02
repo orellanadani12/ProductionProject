@@ -49,7 +49,14 @@ public class ProdController {
     }
     cmbQuantity.setEditable(true);
     cmbQuantity.getSelectionModel().selectFirst();
+
+    // repl.it output need it
+    Product product1 = new Widget("iPod", "Apple", ItemType.AU);
+    System.out.println(product1.toString());
+    Product product2 = new Widget("Zune", "Microsoft", ItemType.AM);
+    System.out.println(product2.toString());
   }
+
 
   public void connectToDb() {
     final String JDBC_DRIVER = "org.h2.Driver";
