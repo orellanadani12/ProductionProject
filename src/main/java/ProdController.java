@@ -40,7 +40,7 @@ public class ProdController {
 
     //options for choiceBox
     for(ItemType item : ItemType.values()) {
-      cbItemType.getItems().add(item.code);
+      cbItemType.getItems().add(String.valueOf(item));
     }
     cbItemType.getSelectionModel().selectFirst();
 
@@ -51,9 +51,9 @@ public class ProdController {
     cmbQuantity.getSelectionModel().selectFirst();
 
     // repl.it output need it
-    Product product1 = new Widget("iPod", "Apple", ItemType.AU);
+    Product product1 = new Widget("iPod", "Apple", ItemType.AUDIO);
     System.out.println(product1.toString());
-    Product product2 = new Widget("Zune", "Microsoft", ItemType.AM);
+    Product product2 = new Widget("Zune", "Microsoft", ItemType.AUDIOMOBILE);
     System.out.println(product2.toString());
   }
 

@@ -1,5 +1,6 @@
 public abstract class Product implements Item {
 
+  //Fields
   public int Id;
   public ItemType Type;
   public String Manufacturer;
@@ -15,7 +16,7 @@ public abstract class Product implements Item {
 
   // toString (returns data)
   public String toString() {
-    return "Name: " + Name + "\n" + "Manufacturer: " + Manufacturer + "\n" + "Type: " + Type;
+    return "Name: " + Name + "\n" + "Manufacturer: " + Manufacturer + "\n" + "Type: " + Type.code;
   }
 
   // Completing the methods from the Interface(Item)

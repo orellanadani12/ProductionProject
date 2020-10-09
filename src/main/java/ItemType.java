@@ -1,9 +1,9 @@
 public enum ItemType {
 
-  AU("Audio"),
-  VI("Visual"),
-  AM("AudioMobile"),
-  VM("VisualMobile");
+  AUDIO("AU"),
+  VISUAL("VI"),
+  AUDIOMOBILE("AM"),
+  VISUALMOBILE("VM");
 
   public final String code;
 
