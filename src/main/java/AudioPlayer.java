@@ -16,7 +16,7 @@ public class AudioPlayer extends Product implements MultimediaControl {
   // toString (returns data)
   public String toString() {
     return "Name: " + Name + "\n" + "Manufacturer: " + Manufacturer + "\n" + "Type: " + Type.code + "\n" +
-        "Supported Audio Format: " + SupportedAudioFormats + "\n" + "Supported Playlist Format: " + SupportedPlaylistFormats;
+        "Supported Audio Formats: " + SupportedAudioFormats + "\n" + "Supported Playlist Formats: " + SupportedPlaylistFormats;
   }
 
   //Implementing Methods of MultimediaControl Interface

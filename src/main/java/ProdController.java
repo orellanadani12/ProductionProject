@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -55,7 +56,24 @@ public class ProdController {
     System.out.println(product1.toString());
     Product product2 = new Widget("Zune", "Microsoft", ItemType.AUDIOMOBILE);
     System.out.println(product2.toString());
-  }
+
+    //Test MultiMedia
+      AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",
+          "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC", "M3U/PLS/WPL");
+      Screen newScreen = new Screen("720x480", 40, 22);
+      MoviePlayer newMovieProduct = new MoviePlayer("DBPOWER MK101", "OracleProduction", newScreen,
+          MonitorType.LCD);
+      ArrayList<MultimediaControl> productList = new ArrayList<MultimediaControl>();
+      productList.add(newAudioProduct);
+      productList.add(newMovieProduct);
+      for (MultimediaControl p : productList) {
+        System.out.println(p);
+        p.play();
+        p.stop();
+        p.next();
+        p.previous();
+      }
+    }
 
 
   public void connectToDb() {
