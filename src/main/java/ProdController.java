@@ -1,4 +1,6 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -27,6 +29,9 @@ public class ProdController {
   private ComboBox<String> cmbQuantity;
 
   @FXML
+  private TextArea txtAreaProductLog;
+
+  @FXML
   void addProduct(ActionEvent event) {
     connectToDb();
     System.out.println("Product Added");
@@ -43,11 +48,14 @@ public class ProdController {
     for(ItemType item : ItemType.values()) {
       cbItemType.getItems().add(String.valueOf(item));
     }
+    // Defaults to first enum type
     cbItemType.getSelectionModel().selectFirst();
 
     for (int count = 1; count <= 10; count++) {
       cmbQuantity.getItems().add(String.valueOf(count));
     }
+
+    // Sets number to default and makes it editable
     cmbQuantity.setEditable(true);
     cmbQuantity.getSelectionModel().selectFirst();
 
@@ -73,6 +81,11 @@ public class ProdController {
         p.next();
         p.previous();
       }
+
+      // Repl.it Issue 4
+      ProductionRecord record = new ProductionRecord(0, 0, "0", new Date());
+    System.out.println(record);
+    txtAreaProductLog.appendText(record.toString());
     }
 
 

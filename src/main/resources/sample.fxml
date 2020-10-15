@@ -96,7 +96,7 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TextArea layoutX="39.0" layoutY="28.0" prefHeight="443.0" prefWidth="731.0" />
+                  <TextArea fx:id="txtAreaProductLog" layoutX="39.0" layoutY="28.0" prefHeight="443.0" prefWidth="731.0" />
                </children></AnchorPane>
       </content>
     </Tab>
