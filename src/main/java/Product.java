@@ -1,4 +1,4 @@
-public abstract class Product implements Item {
+public class Product implements Item {
 
   //Fields
   public int Id;
@@ -33,6 +33,11 @@ public abstract class Product implements Item {
     return Manufacturer;
   }
 
+  public ItemType getType() {
+
+    return Type;
+  }
+
 // Setters
   public void setName(String name) {
     this.Name = name;
@@ -40,6 +45,10 @@ public abstract class Product implements Item {
 
   public void setManufacturer(String manufacturer) {
     this.Manufacturer = manufacturer;
+  }
+
+  public void setId(int id) {
+    this.Id = id;
   }
 
 }

@@ -1,14 +1,17 @@
 public enum ItemType {
 
-  AUDIO("AU"),
-  VISUAL("VI"),
-  AUDIOMOBILE("AM"),
-  VISUALMOBILE("VM");
+  AUDIO("Audio","AU"),
+  VISUAL("Visual","VI"),
+  AUDIOMOBILE("Audio Mobile","AM"),
+  VISUALMOBILE("Visual Mobile","VM");
 
   public final String code;
+  public final String display;
 
   //Constructor
-  ItemType(String code) {
+  ItemType(String display, String code) {
+
+    this.display = display;
     this.code = code;
   }
 

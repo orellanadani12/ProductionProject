@@ -1,14 +1,19 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.sql.*;
 import java.util.Set;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ProdController {
+
 
   @FXML
   private TextField txtProductName;
@@ -20,6 +25,19 @@ public class ProdController {
   private ChoiceBox<String> cbItemType;
 
   @FXML
+  private TableView<Product> existingProduct;
+
+  @FXML
+  private TableColumn<?, ?> colProdName;
+
+  @FXML
+  private TableColumn<?, ?> colManufacturer;
+
+  @FXML
+  private TableColumn<?, ?> colType;
+
+
+  @FXML
   private Button productButton;
 
   @FXML
@@ -29,17 +47,32 @@ public class ProdController {
   private ComboBox<String> cmbQuantity;
 
   @FXML
+  private ListView<Product> produceView;
+
+  @FXML
   private TextArea txtAreaProductLog;
+
+  //List of products loaded from DB
+
+  ObservableList<Product> productLine = FXCollections.observableArrayList();
 
   @FXML
   void addProduct(ActionEvent event) {
     connectToDb();
     System.out.println("Product Added");
+
+    setupProductLineTable();
+    setupProduceListView();
   }
 
   @FXML
   void recordProduction(ActionEvent event) {
-    System.out.println("Production Recorded");
+    System.out.println("Product Recorded");
+
+    Product prodProduced = new Product("Ipod", "Apple", ItemType.VISUALMOBILE);
+    prodProduced.setId(5);
+    ProductionRecord productRec = new ProductionRecord(prodProduced, 7);
+    txtAreaProductLog.appendText(productRec.toString());
   }
 
   public void initialize() {
@@ -60,9 +93,9 @@ public class ProdController {
     cmbQuantity.getSelectionModel().selectFirst();
 
     // repl.it output need it
-    Product product1 = new Widget("iPod", "Apple", ItemType.AUDIO);
+    Product product1 = new Product("iPod", "Apple", ItemType.AUDIO);
     System.out.println(product1.toString());
-    Product product2 = new Widget("Zune", "Microsoft", ItemType.AUDIOMOBILE);
+    Product product2 = new Product("Zune", "Microsoft", ItemType.AUDIOMOBILE);
     System.out.println(product2.toString());
 
     //Test MultiMedia
@@ -83,11 +116,10 @@ public class ProdController {
       }
 
       // Repl.it Issue 4
-      ProductionRecord record = new ProductionRecord(0, 0, "0", new Date());
+      ProductionRecord record = new ProductionRecord(product1, 1);
     System.out.println(record);
     txtAreaProductLog.appendText(record.toString());
     }
-
 
   public void connectToDb() {
     final String JDBC_DRIVER = "org.h2.Driver";
@@ -142,5 +174,27 @@ public class ProdController {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  public void setupProductLineTable() {
+
+    String name = txtProductName.getText();
+    String manufacturer = txtManufacturer.getText();
+    String type = cbItemType.getValue();
+
+    // adds info to ObservableList
+    Product product = new Product(name, manufacturer, ItemType.valueOf(type));
+    productLine.add(product);
+    colProdName.setCellValueFactory(new PropertyValueFactory<>("Name"));
+    colManufacturer.setCellValueFactory(new PropertyValueFactory<>("Manufacturer"));
+    colType.setCellValueFactory(new PropertyValueFactory<>("Type"));
+
+    existingProduct.setItems(productLine);
+
+  }
+
+  public void setupProduceListView() {
+
+  produceView.setItems(productLine);
   }
 }

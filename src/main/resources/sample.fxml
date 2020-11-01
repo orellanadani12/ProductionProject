@@ -55,14 +55,14 @@
                         <ChoiceBox fx:id="cbItemType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
-                  <TableView layoutX="322.0" layoutY="27.0" prefHeight="450.0" prefWidth="487.0">
+                  <TableView fx:id="existingProduct" layoutX="322.0" layoutY="27.0" prefHeight="450.0" prefWidth="487.0">
                     <columns>
-                      <TableColumn prefWidth="88.0" text="Product Name" />
-                      <TableColumn prefWidth="82.0" text="Manufacturer" />
-                        <TableColumn prefWidth="64.0" text="Item Type" />
+                      <TableColumn fx:id="colProdName" prefWidth="88.0" text="Product Name" />
+                      <TableColumn fx:id="colManufacturer" prefWidth="82.0" text="Manufacturer" />
+                        <TableColumn fx:id="colType" prefWidth="64.0" text="Item Type" />
                     </columns>
                   </TableView>
-                  <Label layoutX="499.0" layoutY="-6.0" prefHeight="40.0" prefWidth="107.0" text="Existing Products" textFill="#c3cd0a">
+                  <Label fx:id="lblExistingProd" layoutX="499.0" layoutY="-6.0" prefHeight="40.0" prefWidth="107.0" text="Existing Products" textFill="#c3cd0a">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -89,6 +89,12 @@
                   </Label>
                   <ComboBox fx:id="cmbQuantity" layoutX="148.0" layoutY="53.0" prefWidth="150.0" />
                   <Button fx:id="recordButton" layoutX="122.0" layoutY="198.0" mnemonicParsing="false" onAction="#recordProduction" text="Record Production" />
+                  <ListView fx:id="produceView" layoutX="471.0" layoutY="36.0" prefHeight="438.0" prefWidth="339.0" />
+                  <Label layoutX="616.0" layoutY="10.0" prefHeight="20.0" prefWidth="92.0" text="Produce View" textFill="#c3cd0a">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </children></AnchorPane>
         </content>
       </Tab>

@@ -1,3 +1,4 @@
+
 import java.util.Date;
 
 public class ProductionRecord {
@@ -9,10 +10,11 @@ public class ProductionRecord {
   public Date DateProduced;
 
   // Constructor
-  ProductionRecord( int productID){
-    ProductionNumber = 0;
-    SerialNumber = "0";
-    DateProduced = new Date();
+  public ProductionRecord( int productID){
+    this.ProductionNumber = 0;
+    this.ProductID = productID;
+    this.SerialNumber = "0";
+    this.DateProduced = new Date();
   }
 
   // Overloaded Constructor
@@ -23,10 +25,19 @@ public class ProductionRecord {
     this.DateProduced = dateProduced;
   }
 
+  // Overloaded Constructor--Serial Number
+  public ProductionRecord(Product product, int count) {
+    this.ProductionNumber = 0;
+    this.ProductID = product.getId();
+    this.SerialNumber = product.getManufacturer().substring(0,3).toUpperCase() + product.getType().code
+                        +  String.format("%05d", count);
+    this.DateProduced = new Date();
+  }
+
   // toString (returns data)
   public String toString() {
     return "Prod. Num: " + ProductionNumber + " Product ID: " + ProductID +
-        " Serial Num: " + SerialNumber + " Date: " + DateProduced;
+        " Serial Num: " + SerialNumber + " Date: " + DateProduced + "\n";
   }
 
   //Getters
