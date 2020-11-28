@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,8 +14,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ProdController {
 
-  private Connection conn;
-  private final String PROPERTIES =
+  private static Connection conn;
+  private final String PROPERTIES = "db.properties";
+  private Employee user;
 
   @FXML
   private TextField txtProductName;
@@ -52,11 +55,123 @@ public class ProdController {
   @FXML
   private TextArea txtAreaProductLog;
 
+  @FXML
+  private TextField fldEmplName;
+
+  @FXML
+  private TextField fldEmplUser;
+
+  @FXML
+  private TextField fldEmplEmail;
+
+  @FXML
+  private Button btnLogout;
+
+  @FXML
+  private TextField fldUpdateEmplName;
+
+  @FXML
+  private PasswordField fldUpdateEmplPass;
+
+  @FXML
+  private PasswordField fldEmplPass;
+
+  @FXML
+  private Button btnUpdateEmpl;
+
+  @FXML
+  private Label lblUpdateEmplMsg;
+
+  @FXML
+  void btnLogoutAction(ActionEvent event) {
+
+    user = null;
+    userUpdate();
+    Main.logOut();
+  }
+
+  @FXML
+  void btnUpdateEmplAction(ActionEvent event) {
+
+    userConnection();
+
+    try{
+
+      String newName = fldUpdateEmplName.getText();
+      String newPw = fldUpdateEmplPass.getText();
+
+      // Checks if the password is correct
+      if(!fldEmplPass.getText().equals(user.getPassword())){
+        throw new IllegalArgumentException("Invalid Password");
+      }
+      boolean isUpdated = false;
+
+      //Updates the name
+      if(!newName.isEmpty()){
+        user.setName(newName);
+        isUpdated = true;
+      }
+
+      //Updates the password
+      if(!newPw.isEmpty()){
+        user.setPassword(newPw);
+        isUpdated = true;
+      } else{
+        throw new IllegalArgumentException("Nothing was updated!");
+      }
+    } catch(IllegalArgumentException exception){
+
+    }
+
+    fldEmplName.setText("");
+    fldEmplPass.setText("");
+    fldEmplEmail.setText("");
+  }
+
   //List of products loaded from DB
 
   ObservableList<Product> productLine = FXCollections.observableArrayList();
 
 
+  public static void connect(){
+
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = reverseString(getPwFromFile());
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      //STEP 3: Execute a query
+      Statement stmt = conn.createStatement();
+
+      // STEP 4: Clean-up environment
+      stmt.close();
+
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  public static void closeDb(){
+
+    try {
+      conn.close();
+    } catch (SQLException exception) {
+      exception.printStackTrace();
+    }
+  }
   @FXML
   void addProduct(ActionEvent event) {
     connectToDb();
@@ -110,24 +225,11 @@ public class ProdController {
     //Clears the Observable List so it doesn't duplicate the products
     productLine.clear();
 
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = reverseString(getPwFromFile());
-    Connection conn = null;
-    Statement stmt = null;
+    connect();
 
     try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
       //STEP 3: Execute a query
-      stmt = conn.createStatement();
+      Statement stmt = conn.createStatement();
 
       String selectSql = "Select * FROM Product";
       ResultSet rs = stmt.executeQuery(selectSql);
@@ -158,10 +260,7 @@ public class ProdController {
 
       // STEP 4: Clean-up environment
       stmt.close();
-      conn.close();
-
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      closeDb();
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -169,24 +268,12 @@ public class ProdController {
   }
 
   public void connectToDb() {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = reverseString(getPwFromFile());
-    Connection conn = null;
-    Statement stmt = null;
+    connect();
 
     try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
       //STEP 3: Execute a query
-      stmt = conn.createStatement();
+      Statement stmt = conn.createStatement();
 
       String productName = txtProductName.getText();
       String manufacturer = txtManufacturer.getText();
@@ -214,10 +301,7 @@ public class ProdController {
       ;
       // STEP 4: Clean-up environment
       stmt.close();
-      conn.close();
-
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      closeDb();
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -235,25 +319,12 @@ public class ProdController {
 
   public void addToProductionDB(ObservableList<ProductionRecord> productionRun) {
 
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = reverseString(getPwFromFile());
-    Connection conn = null;
-    Statement stmt = null;
+    connect();
 
     try {
 
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
       //STEP 3: Execute a query
-      stmt = conn.createStatement();
+      Statement stmt = conn.createStatement();
 
       //int productionNum = (int) recordDB.;
 
@@ -270,10 +341,7 @@ public class ProdController {
       }
 
       stmt.close();
-      conn.close();
-
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      closeDb();
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -281,26 +349,13 @@ public class ProdController {
   }
 
   public ArrayList<ProductionRecord> loadProductionLog() {
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
 
-    //  Database credentials
-    final String USER = "";
-    final String PASS = reverseString(getPwFromFile());
-    Connection conn = null;
-    Statement stmt = null;
-
+    connect();
     ArrayList<ProductionRecord> records = new ArrayList<>();
 
     try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
       //STEP 3: Execute a query
-      stmt = conn.createStatement();
+      Statement stmt = conn.createStatement();
 
       //int productionNum = (int) recordDB.;
       final String sql = "SELECT * FROM ProductionRecord";
@@ -321,10 +376,7 @@ public class ProdController {
       showProduction(records);
 
       stmt.close();
-      conn.close();
-
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      closeDb();
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -333,13 +385,13 @@ public class ProdController {
   }
 
   // Reverses Password
-  public String reverseString(String pw){
+  public static String reverseString(String pw){
 
     return (pw.length() <= 1) ? pw : pw.substring(pw.length() - 1)
         + reverseString(pw.substring(0, pw.length() - 1));
   }
 
-  public String getPwFromFile(){
+  public static String getPwFromFile(){
 
     try{
       BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\ffafu\\OneDrive - Florida Gulf Coast University\\Fall 2020 Courses\\OOP Work\\JDK Projects\\ProductionProject\\src\\main\\java\\password DB.txt"));
@@ -369,21 +421,9 @@ public class ProdController {
 
   public Product getProductName(int id){
 
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = reverseString(getPwFromFile());
-    Connection conn;
-    Statement stmt;
+    connect();
 
     try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
       String sql = "SELECT * FROM product WHERE id = ?";
       PreparedStatement ps = conn.prepareStatement(sql);
@@ -412,9 +452,7 @@ public class ProdController {
       }
 
       ps.close();
-      conn.close();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      closeDb();
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -424,23 +462,10 @@ public class ProdController {
 
   public int getSameProductTypeAmnt(int id){
 
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
-
-    //  Database credentials
-    final String USER = "";
-    final String PASS = "";
-    Connection conn;
-    Statement stmt;
-
+    connect();
     int sameTypeAmnt = 0;
 
     try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
       String sql = "SELECT * FROM productionRecord WHERE product_id = ?";
       PreparedStatement ps = conn.prepareStatement(sql);
@@ -460,10 +485,7 @@ public class ProdController {
         }
 
       ps.close();
-      conn.close();
-
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      closeDb();
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -472,21 +494,10 @@ public class ProdController {
   }
 
   public static Employee getUser(String username){
-    final String JDBC_DRIVER = "org.h2.Driver";
-    final String DB_URL = "jdbc:h2:./res/production";
 
-    //  Database credentials
-    final String USER = "";
-    final String PASS = "";
-    Connection conn;
-    Statement stmt;
+    connect();
 
     try {
-      // STEP 1: Register JDBC driver
-      Class.forName(JDBC_DRIVER);
-
-      //STEP 2: Open a connection
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
       String sql = "SELECT * FROM employee WHERE user = ?";
       PreparedStatement ps = conn.prepareStatement(sql);
@@ -504,10 +515,82 @@ public class ProdController {
       }
 
       ps.close();
-      conn.close();
+      closeDb();
 
-    } catch (ClassNotFoundException e) {
+    } catch (SQLException e) {
       e.printStackTrace();
+    }
+    return null;
+  }
+
+  public void setUser(Employee user){
+
+    this.user = user;
+    userUpdate();
+  }
+
+  public void userUpdate(){
+
+    if(user != null){
+
+      fldEmplName.setText(user.getName());
+      fldEmplUser.setText(user.getUsername());
+      fldEmplEmail.setText(user.getEmail());
+    } else{
+      fldEmplName.setText("");
+      fldEmplUser.setText("");
+      fldEmplEmail.setText("");
+    }
+  }
+
+  public void userConnection(){
+
+    if(user == null){
+      throw new IllegalArgumentException("You must Log in!");
+    }
+  }
+
+  public static Employee getUserInDb(String username) {
+
+    connect();
+
+    try {
+
+      String sql = "SELECT * FROM employee WHERE user = ?";
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      ps.setString(1, username);
+      ResultSet rs = ps.executeQuery();
+
+      if(rs.next()){
+        String name = rs.getString("name");
+        String pw = rs.getString("password");
+
+        return new Employee(name, pw);
+      }
+    } catch(SQLException e){
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public Employee userRegistration(String name, String pw){
+
+    connect();
+
+    try {
+
+      String sql = "INSERT INTO employee (name, password) VALUES (?, ?)";
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      // Given Properties
+      Employee user = new Employee(name, pw);
+
+      ps.setString(1, name);
+      ps.setString(2, pw);
+      ps.execute();
+
+      return user;
 
     } catch (SQLException e) {
       e.printStackTrace();

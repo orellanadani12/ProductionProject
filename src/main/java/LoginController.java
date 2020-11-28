@@ -19,6 +19,16 @@ public class LoginController {
   @FXML
   private Label lblLoginMsg;
 
+  public void initialize(){
+
+    // clear message label
+    lblLoginMsg.setText("");
+  }
+  public void setUserFld(String username){
+
+    fldLoginUser.setText(username);
+  }
+
   @FXML
   void btnLoginAction(ActionEvent event) {
 
@@ -36,7 +46,7 @@ public class LoginController {
       }
 
       // Gets the user credentials
-      Employee user = ProdController.getUser(fldLoginUser.getText());
+      Employee user = ProdController.getUserInDb(fldLoginUser.getText());
       if(user == null) {
         throw new IllegalArgumentException("Invalid username");
       }
@@ -47,6 +57,9 @@ public class LoginController {
       }
 
       // Log in
+      Main.productionWindow(user);
+
+    } catch(IllegalStateException exception){
 
     }
   }

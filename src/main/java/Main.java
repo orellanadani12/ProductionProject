@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +9,7 @@ import javafx.util.Pair;
 
 public class Main extends Application {
 
-  private static final String PRODUCT_FXML = "sample.fxml";
+  private static final String PRODUCT_FXML = "production.fxml";
   private static final String LOGIN_FXML = "login.fxml";
 
   private static Stage primaryStage;
@@ -25,22 +24,25 @@ public class Main extends Application {
   }
 
   @Override
-  public void start(Stage primaryStage) throws Exception {
+  public void start(Stage primaryStage){
 
-    /*Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+    /*Parent root = FXMLLoader.load(getClass().getResource("production.fxml"));
     Scene scene = new Scene(root, 811, 507);
     primaryStage.setTitle("Production Project");
     primaryStage.setScene(scene);*/
 
+    setPrimaryStage(primaryStage);
+
     makeLoginPopUp();
     getLoginPopUp().show();
-    getLoginControl().setUserField("forellana");
+    getLoginControl().setUserFld("forellana");
 
     // connect to DB
+    ProdController.connect();
   }
 
   // Opens the Production window & Closes the Login PopUp
-  public void productionWindow(Employee user){
+  public static void productionWindow(Employee user){
 
     closeLoginPopUp();
 
@@ -50,7 +52,7 @@ public class Main extends Application {
   }
 
   // Closes the Production Window & Re-Opens the Login PopUp
-  public void logOut(Employee user){
+  public static void logOut(){
 
     closeProductionWindow();
 
@@ -62,15 +64,15 @@ public class Main extends Application {
     primaryStage = stage;
   }
 
-  private Stage getProductionWindow(){
+  private static Stage getProductionWindow(){
     return productionWindow;
   }
 
-  private Stage getLoginPopUp(){
+  private static Stage getLoginPopUp(){
     return loginPopUp;
   }
 
-  private ProdController getMainControl(){
+  private static ProdController getMainControl(){
     return mainControl;
   }
 
@@ -78,7 +80,7 @@ public class Main extends Application {
     return loginControl;
   }
 
-  private void makeProductionWindow(){
+  private static void makeProductionWindow(){
 
     if(productionWindow != null) {
       productionWindow.close();
@@ -96,7 +98,7 @@ public class Main extends Application {
     }
   }
 
-  private void makeLoginPopUp(){
+  private static void makeLoginPopUp(){
 
     if(loginPopUp != null){
       loginPopUp.close();
@@ -109,12 +111,12 @@ public class Main extends Application {
       loginPopUp = rs.getKey();
       loginControl = (LoginController) rs.getValue();
 
-    } catch(IOException ex){
+    } catch(IOException | ClassCastException ex){
       ex.printStackTrace();
     }
   }
 
-  private void closeProductionWindow(){
+  private static void closeProductionWindow(){
 
     if(productionWindow != null){
       productionWindow.close();
@@ -123,7 +125,7 @@ public class Main extends Application {
     }
   }
 
-  private void closeLoginPopUp() {
+  private static void closeLoginPopUp() {
 
     if(loginPopUp != null){
       loginPopUp.close();
@@ -132,11 +134,12 @@ public class Main extends Application {
     }
   }
 
-  private Pair<Stage, Object> createWindow(Stage stage, String title, String fxmlFile, int width, int height, Modality modality)
+  private static Pair<Stage, Object> createWindow(Stage stage, String title, String fxmlFile,
+      int width, int height, Modality modality)
       throws IOException {
 
     //load fxml file
-    Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+    Parent root = FXMLLoader.load(Main.class.getResource("production.fxml"));
 
     // set title, scene, and modality
     stage.setTitle(title);
