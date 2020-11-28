@@ -55,11 +55,11 @@
                         <ChoiceBox fx:id="cbItemType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
-                  <TableView fx:id="existingProduct" layoutX="322.0" layoutY="27.0" prefHeight="450.0" prefWidth="487.0">
+                  <TableView fx:id="existingProduct" layoutX="322.0" layoutY="27.0" prefHeight="450.0" prefWidth="490.0">
                     <columns>
-                      <TableColumn fx:id="colProdName" prefWidth="88.0" text="Product Name" />
-                      <TableColumn fx:id="colManufacturer" prefWidth="82.0" text="Manufacturer" />
-                        <TableColumn fx:id="colType" prefWidth="64.0" text="Item Type" />
+                      <TableColumn fx:id="colProdName" prefWidth="160.0" text="Product Name" />
+                      <TableColumn fx:id="colManufacturer" prefWidth="160.0" text="Manufacturer" />
+                        <TableColumn fx:id="colType" prefWidth="168.0" text="Item Type" />
                     </columns>
                   </TableView>
                   <Label fx:id="lblExistingProd" layoutX="499.0" layoutY="-6.0" prefHeight="40.0" prefWidth="107.0" text="Existing Products" textFill="#c3cd0a">

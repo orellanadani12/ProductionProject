@@ -8,7 +8,15 @@ public class Product implements Item {
 
 
   // Constructor
-  Product( String name, String manufacturer, ItemType type){
+  Product(String name, String manufacturer, ItemType type){
+    this.Name = name;
+    this.Manufacturer = manufacturer;
+    this.Type = type;
+  }
+
+  // Overloaded Constructor
+  Product(int id, String name, String manufacturer, ItemType type){
+    this.Id = id;
     this.Name = name;
     this.Manufacturer = manufacturer;
     this.Type = type;
@@ -16,7 +24,7 @@ public class Product implements Item {
 
   // toString (returns data)
   public String toString() {
-    return "Name: " + Name + "\n" + "Manufacturer: " + Manufacturer + "\n" + "Type: " + Type.code;
+    return "Name: " + Name + "\n" + "Manufacturer: " + Manufacturer + "\n" + "Type: " + Type;
   }
 
   // Completing the methods from the Interface(Item)

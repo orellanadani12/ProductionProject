@@ -1,19 +1,19 @@
-import java.time.LocalDate;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import java.sql.*;
-import java.util.Set;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ProdController {
 
+  private Connection conn;
+  private final String PROPERTIES =
 
   @FXML
   private TextField txtProductName;
@@ -56,29 +56,37 @@ public class ProdController {
 
   ObservableList<Product> productLine = FXCollections.observableArrayList();
 
+
   @FXML
   void addProduct(ActionEvent event) {
     connectToDb();
     System.out.println("Product Added");
 
-    setupProductLineTable();
-    setupProduceListView();
+    loadProductList();
   }
 
   @FXML
   void recordProduction(ActionEvent event) {
     System.out.println("Product Recorded");
 
-    Product prodProduced = new Product("Ipod", "Apple", ItemType.VISUALMOBILE);
-    prodProduced.setId(5);
-    ProductionRecord productRec = new ProductionRecord(prodProduced, 7);
-    txtAreaProductLog.appendText(productRec.toString());
+    txtAreaProductLog.clear();
+    Product prodRecord = produceView.getSelectionModel().getSelectedItem();
+    int quantity = cmbQuantity.getSelectionModel().getSelectedIndex();
+    ObservableList<ProductionRecord> productionRun = FXCollections.observableArrayList();
+
+    int sameTypeAmnt = getSameProductTypeAmnt(prodRecord.getId());
+
+    for (int i = 0; i <= quantity; i++) {
+      productionRun.add(new ProductionRecord(prodRecord, ++sameTypeAmnt));
+    }
+    addToProductionDB(productionRun);
+    loadProductionLog();
   }
 
   public void initialize() {
 
     //options for choiceBox
-    for(ItemType item : ItemType.values()) {
+    for (ItemType item : ItemType.values()) {
       cbItemType.getItems().add(String.valueOf(item));
     }
     // Defaults to first enum type
@@ -92,34 +100,73 @@ public class ProdController {
     cmbQuantity.setEditable(true);
     cmbQuantity.getSelectionModel().selectFirst();
 
-    // repl.it output need it
-    Product product1 = new Product("iPod", "Apple", ItemType.AUDIO);
-    System.out.println(product1.toString());
-    Product product2 = new Product("Zune", "Microsoft", ItemType.AUDIOMOBILE);
-    System.out.println(product2.toString());
+    setupProductLineTable();
+    loadProductList();
+    loadProductionLog();
+  }
 
-    //Test MultiMedia
-      AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",
-          "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC", "M3U/PLS/WPL");
-      Screen newScreen = new Screen("720x480", 40, 22);
-      MoviePlayer newMovieProduct = new MoviePlayer("DBPOWER MK101", "OracleProduction", newScreen,
-          MonitorType.LCD);
-      ArrayList<MultimediaControl> productList = new ArrayList<MultimediaControl>();
-      productList.add(newAudioProduct);
-      productList.add(newMovieProduct);
-      for (MultimediaControl p : productList) {
-        System.out.println(p);
-        p.play();
-        p.stop();
-        p.next();
-        p.previous();
+  public void loadProductList() {
+
+    //Clears the Observable List so it doesn't duplicate the products
+    productLine.clear();
+
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = reverseString(getPwFromFile());
+    Connection conn = null;
+    Statement stmt = null;
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      //STEP 3: Execute a query
+      stmt = conn.createStatement();
+
+      String selectSql = "Select * FROM Product";
+      ResultSet rs = stmt.executeQuery(selectSql);
+
+// while loop to all data in DB
+      while (rs.next()) {
+
+        int id = rs.getInt(1);
+        String name = rs.getString(2);
+
+        // Gets ItemType from DB
+        ItemType type = null;
+        for (ItemType item : ItemType.values()) {
+          if (String.valueOf(item).equals(rs.getString(3))) {
+            type = item;
+          }
+        }
+
+        String manuf = rs.getString(4);
+
+        Product product = new Product(id, name, manuf, type);
+        productLine.add(product);
+
+        existingProduct.setItems(productLine);
+        produceView.setItems(productLine);
+
       }
 
-      // Repl.it Issue 4
-      ProductionRecord record = new ProductionRecord(product1, 1);
-    System.out.println(record);
-    txtAreaProductLog.appendText(record.toString());
+      // STEP 4: Clean-up environment
+      stmt.close();
+      conn.close();
+
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+  }
 
   public void connectToDb() {
     final String JDBC_DRIVER = "org.h2.Driver";
@@ -127,7 +174,7 @@ public class ProdController {
 
     //  Database credentials
     final String USER = "";
-    final String PASS = "";
+    final String PASS = reverseString(getPwFromFile());
     Connection conn = null;
     Statement stmt = null;
 
@@ -168,6 +215,7 @@ public class ProdController {
       // STEP 4: Clean-up environment
       stmt.close();
       conn.close();
+
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
 
@@ -178,23 +226,292 @@ public class ProdController {
 
   public void setupProductLineTable() {
 
-    String name = txtProductName.getText();
-    String manufacturer = txtManufacturer.getText();
-    String type = cbItemType.getValue();
-
     // adds info to ObservableList
-    Product product = new Product(name, manufacturer, ItemType.valueOf(type));
-    productLine.add(product);
     colProdName.setCellValueFactory(new PropertyValueFactory<>("Name"));
     colManufacturer.setCellValueFactory(new PropertyValueFactory<>("Manufacturer"));
     colType.setCellValueFactory(new PropertyValueFactory<>("Type"));
 
-    existingProduct.setItems(productLine);
-
   }
 
-  public void setupProduceListView() {
+  public void addToProductionDB(ObservableList<ProductionRecord> productionRun) {
 
-  produceView.setItems(productLine);
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = reverseString(getPwFromFile());
+    Connection conn = null;
+    Statement stmt = null;
+
+    try {
+
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      //STEP 3: Execute a query
+      stmt = conn.createStatement();
+
+      //int productionNum = (int) recordDB.;
+
+      for (int i = 0; i < productionRun.size(); i++) {
+
+        final String sql = "INSERT INTO ProductionRecord(product_id, serial_num, date_produced) "
+            + "VALUES ( ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(sql);
+
+        ps.setInt(1, productionRun.get(i).getProductID());
+        ps.setString(2, productionRun.get(i).getSerialNumber());
+        ps.setTimestamp(3, productionRun.get(i).getDateProduced());
+        ps.executeUpdate();
+      }
+
+      stmt.close();
+      conn.close();
+
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public ArrayList<ProductionRecord> loadProductionLog() {
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = reverseString(getPwFromFile());
+    Connection conn = null;
+    Statement stmt = null;
+
+    ArrayList<ProductionRecord> records = new ArrayList<>();
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      //STEP 3: Execute a query
+      stmt = conn.createStatement();
+
+      //int productionNum = (int) recordDB.;
+      final String sql = "SELECT * FROM ProductionRecord";
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      ResultSet rs = ps.executeQuery();
+      while(rs.next()){
+
+        //get properties from the result set
+        int prodsNum = rs.getInt(1);
+        int prodId = rs.getInt(2);
+        String serialNum = rs.getString(3);
+        Timestamp date = rs.getTimestamp(4);
+
+        records.add(new ProductionRecord(prodsNum, prodId, serialNum, date));
+      }
+
+      showProduction(records);
+
+      stmt.close();
+      conn.close();
+
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return records;
+  }
+
+  // Reverses Password
+  public String reverseString(String pw){
+
+    return (pw.length() <= 1) ? pw : pw.substring(pw.length() - 1)
+        + reverseString(pw.substring(0, pw.length() - 1));
+  }
+
+  public String getPwFromFile(){
+
+    try{
+      BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\ffafu\\OneDrive - Florida Gulf Coast University\\Fall 2020 Courses\\OOP Work\\JDK Projects\\ProductionProject\\src\\main\\java\\password DB.txt"));
+
+      StringBuilder content = new StringBuilder();
+      String line;
+
+      while ((line = reader.readLine()) != null) {
+        content.append(line);
+        content.append(System.lineSeparator());
+      }
+
+      return content.toString().trim();
+
+    } catch(IOException ex){
+      return null;
+    }
+  }
+
+  public void showProduction(ArrayList<ProductionRecord> record){
+
+    for(int i = 0; i < record.size(); i++){
+
+      txtAreaProductLog.appendText(record.get(i).toString());
+    }
+  }
+
+  public Product getProductName(int id){
+
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = reverseString(getPwFromFile());
+    Connection conn;
+    Statement stmt;
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      String sql = "SELECT * FROM product WHERE id = ?";
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      ps.setInt(1, id);
+
+      ResultSet rs = ps.executeQuery();
+
+      if(rs.next()) {
+
+        // Get properties
+        String name = rs.getString("product_name");
+
+        ItemType type = null;
+
+        for(ItemType item: ItemType.values()){
+          if(String.valueOf(item).equals(rs.getString("item_type"))){
+            type = item;
+          }
+        }
+
+        String manuf = rs.getString("manufacturer");
+
+        // Return a product
+        return new Product(id, name, manuf, type);
+      }
+
+      ps.close();
+      conn.close();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public int getSameProductTypeAmnt(int id){
+
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = "";
+    Connection conn;
+    Statement stmt;
+
+    int sameTypeAmnt = 0;
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      String sql = "SELECT * FROM productionRecord WHERE product_id = ?";
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      ps.setInt(1, id);
+
+      ResultSet rs = ps.executeQuery();
+
+      while(rs.next()) {
+
+        // Get properties
+        String serialNum = rs.getString("serial_num");
+
+        String subSerialNum = serialNum.substring(5);
+        sameTypeAmnt = Integer.parseInt(subSerialNum);
+
+        }
+
+      ps.close();
+      conn.close();
+
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return 0;
+  }
+
+  public static Employee getUser(String username){
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:./res/production";
+
+    //  Database credentials
+    final String USER = "";
+    final String PASS = "";
+    Connection conn;
+    Statement stmt;
+
+    try {
+      // STEP 1: Register JDBC driver
+      Class.forName(JDBC_DRIVER);
+
+      //STEP 2: Open a connection
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+      String sql = "SELECT * FROM employee WHERE user = ?";
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      ps.setString(1, username);
+      ResultSet rs = ps.executeQuery();
+
+      if(rs.next()) {
+
+        // Get properties
+        String name = rs.getString("name");
+        String pw = rs.getString("password");
+
+        return new Employee(name, pw);
+      }
+
+      ps.close();
+      conn.close();
+
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }
