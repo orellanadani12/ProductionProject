@@ -7,7 +7,7 @@ public class Employee {
   private static final Pattern INVALID_PATTERN = Pattern.compile("[^a-z A-Z]+");
   private static final Pattern LOW_PATTERN = Pattern.compile("[a-z]+");
   private static final Pattern UPPER_PATTERN = Pattern.compile("[A-Z]+");
-  private static final Pattern SPECIAL_PATTERN = Pattern.compile("[^a-z A-Z 0-9]+");
+  private static final Pattern SPECIAL_PATTERN = Pattern.compile("[^a-z A-Z0-9]+");
 
   //Fields
   private String name;
@@ -18,7 +18,7 @@ public class Employee {
   //Constructor
 
   Employee(String fullname, String password){
-    if(checkName(fullname) == true) {
+    if(checkName(fullname)) {
       setName(fullname);
     }else{
       this.name = fullname.trim();
@@ -26,7 +26,7 @@ public class Employee {
       this.email = "user" + EMAIL_SUF;
     }
 
-    if(isValidPassword(password) == true){
+    if(isValidPassword(password)){
       setPassword(password);
     }else{
       this.password = "pw";
@@ -53,7 +53,7 @@ public class Employee {
   //Setters
   private void setUsername(String firstName, String lastName){
 
-    this.username = firstName.toLowerCase().substring(0, 1) + lastName.toLowerCase();
+    this.username = firstName.toLowerCase().charAt(0) + lastName.toLowerCase();
   }
 
   public void setPassword(String password){
@@ -83,13 +83,13 @@ public class Employee {
   }
 
   //Methods
-  private boolean checkName(String name){
+  public boolean checkName(String name){
 
     Matcher invalidMatch = INVALID_PATTERN.matcher(name);
     return name.contains(" ") && !invalidMatch.find();
   }
 
-  private boolean isValidPassword(String password){
+  public boolean isValidPassword(String password){
 
     Matcher upper = UPPER_PATTERN.matcher(password);
     Matcher lower = LOW_PATTERN.matcher(password);
@@ -101,7 +101,11 @@ public class Employee {
   @Override
   public String toString() {
 
+    ProdController prod = new ProdController();
+    Employee name = prod.getUserInDb(getName());
+    Employee pw = prod.getUserInDb(getPassword());
+
     return "Employee Details: \nName: " + name + "\n" + "Username: " + username + "\n"
-        + "Email: " + email + "\n" + "Password: " + password;
+        + "Email: " + email + "\n" + "Password: " + pw;
   }
 }

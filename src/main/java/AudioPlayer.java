@@ -1,17 +1,19 @@
 public class AudioPlayer extends Product implements MultimediaControl {
 
   //Fields
-  public String SupportedAudioFormats;
-  public String SupportedPlaylistFormats;
+  public final String SupportedAudioFormats;
+  public final String SupportedPlaylistFormats;
 
-  // Constructor
-  AudioPlayer( String name, String manufacturer, String supportedAudioFormats, String supportedPlaylistFormats){
-    super(name, manufacturer, ItemType.AUDIO);
-    this.Name = name;
-    this.Manufacturer = manufacturer;
-    this.SupportedAudioFormats = supportedAudioFormats;
-    this.SupportedPlaylistFormats = supportedPlaylistFormats;
-  }
+
+// Constructor
+ AudioPlayer( String name, String manufacturer, String supportedAudioFormats, String supportedPlaylistFormats){
+   super(name, manufacturer, ItemType.AUDIO);
+   this.Name = name;
+   this.Manufacturer = manufacturer;
+   this.SupportedAudioFormats = supportedAudioFormats;
+   this.SupportedPlaylistFormats = supportedPlaylistFormats;
+ }
+
 
   // toString (returns data)
   public String toString() {

@@ -2,7 +2,7 @@ public class Product implements Item {
 
   //Fields
   public int Id;
-  public ItemType Type;
+  public final ItemType Type;
   public String Manufacturer;
   public String Name;
 

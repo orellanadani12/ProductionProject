@@ -1,7 +1,7 @@
-.root {
-  -fx-background-color: blue;
+root {
+  -fx-background-color: beige;
 }
 
-.button {
+button {
   -fx-border-color: black;
 }

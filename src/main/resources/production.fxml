@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -18,93 +19,152 @@
 <?import javafx.scene.text.Font?>
 
 <TabPane prefHeight="507.0" prefWidth="811.0" stylesheets="@CSSStyle.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ProdController">
-  <tabs>
-    <Tab text="Production Line">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="300.0" snapToPixel="false">
-               <children>
-                  <GridPane layoutX="14.0" prefHeight="237.0" prefWidth="308.0" AnchorPane.bottomAnchor="141.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="389.0" AnchorPane.topAnchor="0.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="114.0" minWidth="10.0" prefWidth="103.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="99.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label alignment="CENTER" stylesheets="@CSSStyle.css" text="Product Name" textFill="#c3cd0a">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label text="Manufacturer" textFill="#c3cd0a" GridPane.rowIndex="1">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label prefHeight="35.0" prefWidth="100.0" text="Item Type" textFill="#c3cd0a" GridPane.rowIndex="2">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtProductName" promptText="Product Name" GridPane.columnIndex="1" />
-                        <TextField fx:id="txtManufacturer" promptText="Manufacturer" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <ChoiceBox fx:id="cbItemType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                     </children>
-                  </GridPane>
-                  <TableView fx:id="existingProduct" layoutX="322.0" layoutY="27.0" prefHeight="450.0" prefWidth="490.0">
-                    <columns>
-                      <TableColumn fx:id="colProdName" prefWidth="160.0" text="Product Name" />
-                      <TableColumn fx:id="colManufacturer" prefWidth="160.0" text="Manufacturer" />
-                        <TableColumn fx:id="colType" prefWidth="168.0" text="Item Type" />
-                    </columns>
-                  </TableView>
-                  <Label fx:id="lblExistingProd" layoutX="499.0" layoutY="-6.0" prefHeight="40.0" prefWidth="107.0" text="Existing Products" textFill="#c3cd0a">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="productButton" layoutX="57.0" layoutY="324.0" mnemonicParsing="false" onAction="#addProduct" text="Add Product" />
-               </children>
-            </AnchorPane>
-      </content>
-    </Tab>
-      <Tab text="Produce">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Label layoutX="124.0" layoutY="14.0" text="Choose Product" textFill="#c3cd0a">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <ListView layoutX="6.0" layoutY="34.0" prefHeight="433.0" prefWidth="460.0" />
-                  <Label layoutX="20.0" layoutY="55.0" text="Choose Quantity">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="cmbQuantity" layoutX="148.0" layoutY="53.0" prefWidth="150.0" />
-                  <Button fx:id="recordButton" layoutX="122.0" layoutY="198.0" mnemonicParsing="false" onAction="#recordProduction" text="Record Production" />
-                  <ListView fx:id="produceView" layoutX="471.0" layoutY="36.0" prefHeight="438.0" prefWidth="339.0" />
-                  <Label layoutX="616.0" layoutY="10.0" prefHeight="20.0" prefWidth="92.0" text="Produce View" textFill="#c3cd0a">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children></AnchorPane>
-        </content>
-      </Tab>
-    <Tab text="Production Log">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <TextArea fx:id="txtAreaProductLog" layoutX="39.0" layoutY="28.0" prefHeight="443.0" prefWidth="731.0" />
-               </children></AnchorPane>
-      </content>
-    </Tab>
-  </tabs>
+  <Tab fx:id="tabWelcome" text="Welcome">
+    <content>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <children>
+          <Label layoutX="128.0" layoutY="43.0" text="Returning User" textFill="#10100d">
+            <font>
+              <Font size="18.0" />
+            </font>
+          </Label>
+          <Label layoutX="565.0" layoutY="43.0" text="New User" textFill="#10100d">
+            <font>
+              <Font size="18.0" />
+            </font>
+          </Label>
+          <Label layoutX="38.0" layoutY="141.0" text="Name:" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <Label layoutX="28.0" layoutY="204.0" text="Password:" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <TextField fx:id="fldUserName" layoutX="113.0" layoutY="139.0" promptText="Full Name" />
+          <Label layoutX="456.0" layoutY="141.0" text="Name:" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <Label layoutX="435.0" layoutY="204.0" text="Password:" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <TextField fx:id="fldNewUserName" layoutX="507.0" layoutY="139.0" promptText="Full Name" />
+          <Button fx:id="btnLogin" layoutX="164.0" layoutY="257.0" mnemonicParsing="false" onAction="#login" text="Login" />
+          <Button fx:id="btnRegister" layoutX="551.0" layoutY="257.0" mnemonicParsing="false" onAction="#register" text="Register" />
+          <Label fx:id="lblRetUserMessage" layoutX="90.0" layoutY="315.0" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <Label fx:id="lblNewUserMessage" layoutX="526.0" layoutY="335.0" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <PasswordField fx:id="fldUserPw" layoutX="114.0" layoutY="201.0" promptText="Password" />
+          <PasswordField fx:id="fldNewUserPw" layoutX="507.0" layoutY="201.0" promptText="Password" />
+          <Label layoutX="270.0" layoutY="143.0" text="(First Name Last Name)" />
+          <Label layoutX="663.0" layoutY="143.0" text="(First Name Last Name)" />
+          <Label layoutX="14.0" layoutY="376.0" text="Password Must contain a capital letter, lower case letter, a number, and a special character" />
+          <Label layoutX="14.0" layoutY="393.0" text="If not, a default password will be used" />
+          <Label layoutX="14.0" layoutY="427.0" text="Name Must have a space between First Name and Last Name" />
+        </children>
+      </AnchorPane>
+    </content>
+  </Tab>
+  <Tab fx:id="tabProductionLine" text="Production Line">
+    <content>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="300.0" snapToPixel="false">
+        <children>
+          <GridPane layoutX="14.0" prefHeight="237.0" prefWidth="308.0" AnchorPane.bottomAnchor="141.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="389.0" AnchorPane.topAnchor="0.0">
+            <columnConstraints>
+              <ColumnConstraints hgrow="SOMETIMES" maxWidth="114.0" minWidth="10.0" prefWidth="103.0" />
+              <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="99.0" />
+            </columnConstraints>
+            <rowConstraints>
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+              <Label alignment="CENTER" stylesheets="@CSSStyle.css" text="Product Name:" textFill="#10100d">
+                <font>
+                  <Font size="13.0" />
+                </font>
+              </Label>
+              <Label text="Manufacturer:" textFill="#10100d" GridPane.rowIndex="1">
+                <font>
+                  <Font size="13.0" />
+                </font>
+              </Label>
+              <Label prefHeight="35.0" prefWidth="100.0" text="Item Type:" textFill="#10100d" GridPane.rowIndex="2">
+                <font>
+                  <Font size="13.0" />
+                </font>
+              </Label>
+              <TextField fx:id="txtProductName" promptText="Product Name" GridPane.columnIndex="1" />
+              <TextField fx:id="txtManufacturer" promptText="Manufacturer" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+              <ChoiceBox fx:id="cbItemType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            </children>
+          </GridPane>
+          <TableView fx:id="existingProduct" layoutX="322.0" layoutY="27.0" prefHeight="450.0" prefWidth="490.0">
+            <columns>
+              <TableColumn fx:id="colProdName" prefWidth="160.0" text="Product Name" />
+              <TableColumn fx:id="colManufacturer" prefWidth="160.0" text="Manufacturer" />
+              <TableColumn fx:id="colType" prefWidth="168.0" text="Item Type" />
+            </columns>
+          </TableView>
+          <Label fx:id="lblExistingProd" layoutX="499.0" layoutY="-6.0" prefHeight="40.0" prefWidth="107.0" text="Existing Products" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <Button fx:id="productButton" layoutX="57.0" layoutY="324.0" mnemonicParsing="false" onAction="#addProduct" text="Add Product" />
+        </children>
+      </AnchorPane>
+    </content>
+  </Tab>
+  <Tab fx:id="tabProduce" text="Produce">
+    <content>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <children>
+          <Label layoutX="124.0" layoutY="14.0" text="Choose Product" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <ListView layoutX="6.0" layoutY="34.0" prefHeight="433.0" prefWidth="460.0" />
+          <Label layoutX="20.0" layoutY="55.0" text="Choose Quantity">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+          <ComboBox fx:id="cmbQuantity" layoutX="148.0" layoutY="53.0" prefWidth="150.0" />
+          <Button fx:id="recordButton" layoutX="122.0" layoutY="198.0" mnemonicParsing="false" onAction="#recordProduction" text="Record Production" />
+          <ListView fx:id="produceView" layoutX="471.0" layoutY="36.0" prefHeight="438.0" prefWidth="339.0" />
+          <Label layoutX="616.0" layoutY="10.0" prefHeight="20.0" prefWidth="92.0" text="Produce View" textFill="#10100d">
+            <font>
+              <Font size="14.0" />
+            </font>
+          </Label>
+        </children>
+      </AnchorPane>
+    </content>
+  </Tab>
+  <Tab fx:id="tabProductionLog" text="Production Log">
+    <content>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <children>
+          <TextArea fx:id="txtAreaProductLog" layoutX="39.0" layoutY="28.0" prefHeight="443.0" prefWidth="731.0" />
+        </children>
+      </AnchorPane>
+    </content>
+  </Tab>
 </TabPane>

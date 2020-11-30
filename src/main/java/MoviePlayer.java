@@ -1,8 +1,8 @@
 public class MoviePlayer extends Product implements MultimediaControl {
 
     //Fields
-    public Screen Screen;
-    public MonitorType MonitorType;
+    public final Screen Screen;
+    public final MonitorType MonitorType;
 
     // Constructor
     MoviePlayer( String name, String manufacturer, Screen screen, MonitorType monitorType){

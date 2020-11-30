@@ -1,22 +1,44 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.sql.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+@SuppressWarnings("SameReturnValue")
 public class ProdController {
 
   private static Connection conn;
-  private final String PROPERTIES = "db.properties";
-  private Employee user;
+
+  @FXML
+  private Tab tabWelcome;
+
+  @FXML
+  private TextField fldUserName;
+
+
+  @FXML
+  private TextField fldNewUserName;
+
+  @FXML
+  private PasswordField fldUserPw;
+
+  @FXML
+  private PasswordField fldNewUserPw;
+
+  @FXML
+  private Label lblRetUserMessage;
+
+  @FXML
+  private Label lblNewUserMessage;
+
+  @FXML
+  private Tab tabProductionLine;
 
   @FXML
   private TextField txtProductName;
@@ -39,12 +61,8 @@ public class ProdController {
   @FXML
   private TableColumn<?, ?> colType;
 
-
   @FXML
-  private Button productButton;
-
-  @FXML
-  private Button recordButton;
+  private Tab tabProduce;
 
   @FXML
   private ComboBox<String> cmbQuantity;
@@ -53,84 +71,78 @@ public class ProdController {
   private ListView<Product> produceView;
 
   @FXML
+  private Tab tabProductionLog;
+
+  @FXML
   private TextArea txtAreaProductLog;
 
   @FXML
-  private TextField fldEmplName;
+  void login() throws IllegalStateException {
 
-  @FXML
-  private TextField fldEmplUser;
+    connect();
 
-  @FXML
-  private TextField fldEmplEmail;
+    // Makes sure the username is not empty
+    String userName = fldUserName.getText().trim();
+    if (userName.isEmpty()) {
+      throw new IllegalArgumentException("Please type a Name");
+    }
 
-  @FXML
-  private Button btnLogout;
+    // Makes sure the password is not empty
+    String pw = fldUserPw.getText().trim();
+    if (pw.isEmpty()) {
+      throw new IllegalArgumentException("Please type a Password");
+    }
 
-  @FXML
-  private TextField fldUpdateEmplName;
+    // Gets the user credentials
+    Employee user = getUserInDb(fldUserName.getText());
 
-  @FXML
-  private PasswordField fldUpdateEmplPass;
+    if (user.getName().equals(userName) && user.getPassword().equals(pw)) {
 
-  @FXML
-  private PasswordField fldEmplPass;
+      lblRetUserMessage.setText("Welcome back " + user.getName() + "!");
 
-  @FXML
-  private Button btnUpdateEmpl;
+      tabWelcome.setDisable(true);
+    }
+    else{
+      lblRetUserMessage.setText("Wrong Name or Password! Please try again!");
+    }
 
-  @FXML
-  private Label lblUpdateEmplMsg;
+    tabProductionLog.setDisable(false);
+    tabProductionLine.setDisable(false);
+    tabProduce.setDisable(false);
 
-  @FXML
-  void btnLogoutAction(ActionEvent event) {
-
-    user = null;
-    userUpdate();
-    Main.logOut();
   }
 
   @FXML
-  void btnUpdateEmplAction(ActionEvent event) {
+  void register() throws IllegalStateException {
 
-    userConnection();
+    connect();
+    userRegistration();
 
-    try{
-
-      String newName = fldUpdateEmplName.getText();
-      String newPw = fldUpdateEmplPass.getText();
-
-      // Checks if the password is correct
-      if(!fldEmplPass.getText().equals(user.getPassword())){
-        throw new IllegalArgumentException("Invalid Password");
-      }
-      boolean isUpdated = false;
-
-      //Updates the name
-      if(!newName.isEmpty()){
-        user.setName(newName);
-        isUpdated = true;
-      }
-
-      //Updates the password
-      if(!newPw.isEmpty()){
-        user.setPassword(newPw);
-        isUpdated = true;
-      } else{
-        throw new IllegalArgumentException("Nothing was updated!");
-      }
-    } catch(IllegalArgumentException exception){
-
+    // Makes sure the username is not empty
+    String userName = fldNewUserName.getText().trim();
+    if (userName.isEmpty()) {
+      lblNewUserMessage.setText("Please type a Name");
     }
 
-    fldEmplName.setText("");
-    fldEmplPass.setText("");
-    fldEmplEmail.setText("");
+    // Makes sure the password is not empty
+    String pw = fldNewUserPw.getText().trim();
+    if (pw.isEmpty()) {
+      lblNewUserMessage.setText("Please type a Password");
+    }
+
+    Employee user = getUserInDb(fldNewUserName.getText());
+    lblNewUserMessage.setText("Employee Details: \nName: " + user.getName() + "\n" + "Username: "
+        + user.getUsername() + "\n" + "Email: " + user.getEmail() + "\n" + "Password: " + user.getPassword());
+
+    tabProductionLog.setDisable(false);
+    tabProductionLine.setDisable(false);
+    tabProduce.setDisable(false);
+    tabWelcome.setDisable(true);
   }
 
   //List of products loaded from DB
 
-  ObservableList<Product> productLine = FXCollections.observableArrayList();
+  final ObservableList<Product> productLine = FXCollections.observableArrayList();
 
 
   public static void connect(){
@@ -140,7 +152,7 @@ public class ProdController {
 
     //  Database credentials
     final String USER = "";
-    final String PASS = reverseString(getPwFromFile());
+    final String PASS = reverseString(Objects.requireNonNull(getPwFromFile()));
 
     try {
       // STEP 1: Register JDBC driver
@@ -155,10 +167,7 @@ public class ProdController {
       // STEP 4: Clean-up environment
       stmt.close();
 
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-
-    } catch (SQLException e) {
+    } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();
     }
 
@@ -173,7 +182,7 @@ public class ProdController {
     }
   }
   @FXML
-  void addProduct(ActionEvent event) {
+  void addProduct() {
     connectToDb();
     System.out.println("Product Added");
 
@@ -181,7 +190,7 @@ public class ProdController {
   }
 
   @FXML
-  void recordProduction(ActionEvent event) {
+  void recordProduction() {
     System.out.println("Product Recorded");
 
     txtAreaProductLog.clear();
@@ -189,16 +198,20 @@ public class ProdController {
     int quantity = cmbQuantity.getSelectionModel().getSelectedIndex();
     ObservableList<ProductionRecord> productionRun = FXCollections.observableArrayList();
 
-    int sameTypeAmnt = getSameProductTypeAmnt(prodRecord.getId());
+    int sameTypeAmount = getSameProductTypeAmount(prodRecord.getId());
 
     for (int i = 0; i <= quantity; i++) {
-      productionRun.add(new ProductionRecord(prodRecord, ++sameTypeAmnt));
+      productionRun.add(new ProductionRecord(prodRecord, ++sameTypeAmount));
     }
     addToProductionDB(productionRun);
     loadProductionLog();
   }
 
   public void initialize() {
+
+    tabProductionLog.setDisable(true);
+    tabProductionLine.setDisable(true);
+    tabProduce.setDisable(true);
 
     //options for choiceBox
     for (ItemType item : ItemType.values()) {
@@ -248,9 +261,9 @@ public class ProdController {
           }
         }
 
-        String manuf = rs.getString(4);
+        String manufacturer = rs.getString(4);
 
-        Product product = new Product(id, name, manuf, type);
+        Product product = new Product(id, name, manufacturer, type);
         productLine.add(product);
 
         existingProduct.setItems(productLine);
@@ -298,7 +311,6 @@ public class ProdController {
         System.out.println(rs.getString(2));
         System.out.println(rs.getString(3));
       }
-      ;
       // STEP 4: Clean-up environment
       stmt.close();
       closeDb();
@@ -328,15 +340,15 @@ public class ProdController {
 
       //int productionNum = (int) recordDB.;
 
-      for (int i = 0; i < productionRun.size(); i++) {
+      for (ProductionRecord productionRecord : productionRun) {
 
         final String sql = "INSERT INTO ProductionRecord(product_id, serial_num, date_produced) "
             + "VALUES ( ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql);
 
-        ps.setInt(1, productionRun.get(i).getProductID());
-        ps.setString(2, productionRun.get(i).getSerialNumber());
-        ps.setTimestamp(3, productionRun.get(i).getDateProduced());
+        ps.setInt(1, productionRecord.getProductID());
+        ps.setString(2, productionRecord.getSerialNumber());
+        ps.setTimestamp(3, productionRecord.getDateProduced());
         ps.executeUpdate();
       }
 
@@ -413,9 +425,9 @@ public class ProdController {
 
   public void showProduction(ArrayList<ProductionRecord> record){
 
-    for(int i = 0; i < record.size(); i++){
+    for (ProductionRecord productionRecord : record) {
 
-      txtAreaProductLog.appendText(record.get(i).toString());
+      txtAreaProductLog.appendText(productionRecord.toString());
     }
   }
 
@@ -445,10 +457,10 @@ public class ProdController {
           }
         }
 
-        String manuf = rs.getString("manufacturer");
+        String manufacturer = rs.getString("manufacturer");
 
         // Return a product
-        return new Product(id, name, manuf, type);
+        return new Product(id, name, manufacturer, type);
       }
 
       ps.close();
@@ -460,10 +472,9 @@ public class ProdController {
     return null;
   }
 
-  public int getSameProductTypeAmnt(int id){
+  public int getSameProductTypeAmount(int id){
 
     connect();
-    int sameTypeAmnt = 0;
 
     try {
 
@@ -480,7 +491,7 @@ public class ProdController {
         String serialNum = rs.getString("serial_num");
 
         String subSerialNum = serialNum.substring(5);
-        sameTypeAmnt = Integer.parseInt(subSerialNum);
+        int sameTypeAmount = Integer.parseInt(subSerialNum);
 
         }
 
@@ -493,21 +504,21 @@ public class ProdController {
     return 0;
   }
 
-  public static Employee getUser(String username){
+  public Employee getUserInDb(String userName) {
 
     connect();
 
     try {
 
-      String sql = "SELECT * FROM employee WHERE user = ?";
+      String sql = "SELECT * FROM employee WHERE name = ?";
       PreparedStatement ps = conn.prepareStatement(sql);
 
-      ps.setString(1, username);
+      ps.setString(1, userName);
+
       ResultSet rs = ps.executeQuery();
 
-      if(rs.next()) {
+      if(rs.next()){
 
-        // Get properties
         String name = rs.getString("name");
         String pw = rs.getString("password");
 
@@ -517,84 +528,34 @@ public class ProdController {
       ps.close();
       closeDb();
 
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  public void setUser(Employee user){
-
-    this.user = user;
-    userUpdate();
-  }
-
-  public void userUpdate(){
-
-    if(user != null){
-
-      fldEmplName.setText(user.getName());
-      fldEmplUser.setText(user.getUsername());
-      fldEmplEmail.setText(user.getEmail());
-    } else{
-      fldEmplName.setText("");
-      fldEmplUser.setText("");
-      fldEmplEmail.setText("");
-    }
-  }
-
-  public void userConnection(){
-
-    if(user == null){
-      throw new IllegalArgumentException("You must Log in!");
-    }
-  }
-
-  public static Employee getUserInDb(String username) {
-
-    connect();
-
-    try {
-
-      String sql = "SELECT * FROM employee WHERE user = ?";
-      PreparedStatement ps = conn.prepareStatement(sql);
-
-      ps.setString(1, username);
-      ResultSet rs = ps.executeQuery();
-
-      if(rs.next()){
-        String name = rs.getString("name");
-        String pw = rs.getString("password");
-
-        return new Employee(name, pw);
-      }
     } catch(SQLException e){
       e.printStackTrace();
     }
     return null;
   }
 
-  public Employee userRegistration(String name, String pw){
+  public void userRegistration(){
 
     connect();
 
     try {
 
-      String sql = "INSERT INTO employee (name, password) VALUES (?, ?)";
+      String name = fldNewUserName.getText();
+      String pw = fldNewUserPw.getText();
+
+      Employee user = new Employee(name, pw);
+
+      String sql = "INSERT INTO employee(name, email, password) VALUES (?, ?, ?)";
       PreparedStatement ps = conn.prepareStatement(sql);
 
       // Given Properties
-      Employee user = new Employee(name, pw);
-
-      ps.setString(1, name);
-      ps.setString(2, pw);
+      ps.setString(1, user.getName());
+      ps.setString(2, user.getEmail());
+      ps.setString(3, user.getPassword());
       ps.execute();
-
-      return user;
 
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return null;
   }
 }

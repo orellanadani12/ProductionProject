@@ -1,18 +1,18 @@
 public class Screen implements ScreenSpec{
 
   //Fields
-  public String resolution;
-  public int refreshRate;
-  public int responseTime;
+  public final String resolution;
+  public final int refreshRate;
+  public final int responseTime;
 
   //Constructor
-  Screen(String resolution, int refreshrate, int responsetime){
+  Screen(String resolution, int refreshRate, int responseTime){
     this.resolution = resolution;
-    this.refreshRate = refreshrate;
-    this.responseTime = responsetime;
+    this.refreshRate = refreshRate;
+    this.responseTime = responseTime;
   }
 
-  //Complemeting Methods
+  //Complementing Methods
   public String getResolution(){
     return resolution;
   }
