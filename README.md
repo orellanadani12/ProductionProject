@@ -7,6 +7,6 @@ production management system.
 
 # Demonstration
 
-![Returning User](PP gif returning user.gif)
+![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user.gif)
 
 
