@@ -7,8 +7,18 @@ production management system.
 
 # Demonstration
 
+Returning User:
 
+![](1%20Returning%20User.gif)
 
+New User:
 
+![](2%20New%20User.gif)
 
+Returning User Error Checking:
 
+![](3%20Returning%20User%20Error%20Checking.gif)
+
+New User Error Checking:
+
+![](4%20New%20User%20Error%20Checking.gif)
