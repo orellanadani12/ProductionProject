@@ -5,7 +5,7 @@ This is a project assignment I created for Professor Vanselow's
 class in the Fall 2020 semester. The program is a JavaFX application that acts as a 
 production management system.
 
-# Demonstration
+## Demonstration
 
 Returning User:
 
@@ -22,3 +22,6 @@ Returning User Error Checking:
 New User Error Checking:
 
 ![](4%20New%20User%20Error%20Checking.gif)
+
+## Documentation
+[Production Project JavaDocs](orellanadani12.github.io/ProductionProject/)
