@@ -1,152 +1,266 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import java.sql.*;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-@SuppressWarnings("SameReturnValue")
+/**
+ * Handles user interaction with the Production GUI.
+ *
+ * @author Fernando Orellana
+ */
 public class ProdController {
 
+  /**
+   * The database connection.
+   */
   private static Connection conn;
 
+  /**
+   * The Welcome Tab.
+   */
   @FXML
   private Tab tabWelcome;
 
+  /**
+   * The user's name(input) text field.
+   */
   @FXML
   private TextField fldUserName;
 
-
+  /**
+   * The New user's name(input) text field.
+   */
   @FXML
   private TextField fldNewUserName;
 
+  /**
+   * The user's password(input) password field.
+   */
   @FXML
   private PasswordField fldUserPw;
 
+  /**
+   * The New user's password(input) password field.
+   */
   @FXML
   private PasswordField fldNewUserPw;
 
+  /**
+   * Message label for returning users.
+   */
   @FXML
   private Label lblRetUserMessage;
 
+  /**
+   * Message label for new users.
+   */
   @FXML
   private Label lblNewUserMessage;
 
+  /**
+   * The Production Line Tab.
+   */
   @FXML
   private Tab tabProductionLine;
 
+  /**
+   * The product name(input) text field.
+   */
   @FXML
   private TextField txtProductName;
 
+  /**
+   * The product manufacturer(input) text field.
+   */
   @FXML
   private TextField txtManufacturer;
 
+  /**
+   * The Item Type Choice Box(User selection).
+   */
   @FXML
   private ChoiceBox<String> cbItemType;
 
+  /**
+   * The table that shows the products from the database.
+   */
   @FXML
   private TableView<Product> existingProduct;
 
+  /**
+   * The Production Name column for the table.
+   */
   @FXML
   private TableColumn<?, ?> colProdName;
 
+  /**
+   * The Production Manufacturer column for the table.
+   */
   @FXML
   private TableColumn<?, ?> colManufacturer;
 
+  /**
+   * The Production Type column for the table.
+   */
   @FXML
   private TableColumn<?, ?> colType;
 
+  /**
+   * The Produce Tab.
+   */
   @FXML
   private Tab tabProduce;
 
+  /**
+   * The Quantity combo box(user selection).
+   */
   @FXML
   private ComboBox<String> cmbQuantity;
 
+  /**
+   * The List View of the products to produce.
+   */
   @FXML
   private ListView<Product> produceView;
 
+  /**
+   * The Production Log Tab.
+   */
   @FXML
   private Tab tabProductionLog;
 
+  /**
+   * The Production Log text area.
+   */
   @FXML
   private TextArea txtAreaProductLog;
 
+  /**
+   * List of products loaded from the database.
+   */
+  final ObservableList<Product> productLine = FXCollections.observableArrayList();
+
+  /**
+   * Handles the login button being pressed.
+   *
+   * @throws IllegalStateException
+   */
   @FXML
   void login() throws IllegalStateException {
 
+    // Connects to the database
     connect();
 
-    // Makes sure the username is not empty
+    // Makes sure the user's name is not empty
     String userName = fldUserName.getText().trim();
-    if (userName.isEmpty()) {
-      throw new IllegalArgumentException("Please type a Name");
-    }
 
     // Makes sure the password is not empty
     String pw = fldUserPw.getText().trim();
-    if (pw.isEmpty()) {
-      throw new IllegalArgumentException("Please type a Password");
-    }
 
     // Gets the user credentials
     Employee user = getUserInDb(fldUserName.getText());
 
-    if (user.getName().equals(userName) && user.getPassword().equals(pw)) {
+    //Starting point of the tabs
+    tabProductionLog.setDisable(true);
+    tabProductionLine.setDisable(true);
+    tabProduce.setDisable(true);
 
-      lblRetUserMessage.setText("Welcome back " + user.getName() + "!");
-
-      tabWelcome.setDisable(true);
+    if (userName.isEmpty() && pw.isEmpty()){
+      lblRetUserMessage.setText("Please type a Name and Password");
     }
-    else{
+
+    else if (userName.isEmpty()) {
+      lblRetUserMessage.setText("Please type a Name");
+    }
+
+    else if (pw.isEmpty()) {
+      lblRetUserMessage.setText("Please type a Password");
+    }
+
+    else if (!user.getName().equals(userName) || (user.getName().equals(userName) && !user.getPassword().equals(pw))){
       lblRetUserMessage.setText("Wrong Name or Password! Please try again!");
     }
 
-    tabProductionLog.setDisable(false);
-    tabProductionLine.setDisable(false);
-    tabProduce.setDisable(false);
+    else if (user.getName().equals(userName) && user.getPassword().equals(pw)) {
 
+      lblRetUserMessage.setText("Welcome back " + user.getName() + "!");
+
+      tabProductionLog.setDisable(false);
+      tabProductionLine.setDisable(false);
+      tabProduce.setDisable(false);
+      tabWelcome.setDisable(true);
+    }
   }
 
+  /**
+   * Handles the register button being pressed.
+   *
+   * @throws IllegalStateException
+   */
   @FXML
   void register() throws IllegalStateException {
 
+    //Connects to database
     connect();
+
+    //Registers the new user
     userRegistration();
 
     // Makes sure the username is not empty
     String userName = fldNewUserName.getText().trim();
-    if (userName.isEmpty()) {
-      lblNewUserMessage.setText("Please type a Name");
-    }
 
     // Makes sure the password is not empty
     String pw = fldNewUserPw.getText().trim();
-    if (pw.isEmpty()) {
-      lblNewUserMessage.setText("Please type a Password");
-    }
+
 
     Employee user = getUserInDb(fldNewUserName.getText());
-    lblNewUserMessage.setText("Employee Details: \nName: " + user.getName() + "\n" + "Username: "
-        + user.getUsername() + "\n" + "Email: " + user.getEmail() + "\n" + "Password: " + user.getPassword());
 
-    tabProductionLog.setDisable(false);
-    tabProductionLine.setDisable(false);
-    tabProduce.setDisable(false);
-    tabWelcome.setDisable(true);
+    tabProductionLog.setDisable(true);
+    tabProductionLine.setDisable(true);
+    tabProduce.setDisable(true);
+
+    if (userName.isEmpty() && pw.isEmpty()){
+
+      lblNewUserMessage.setText("Please type a Name and Password");
+    }
+    else if (userName.isEmpty()) {
+      lblNewUserMessage.setText("Please type a Name");
+    }
+
+    else if (pw.isEmpty()) {
+      lblNewUserMessage.setText("Please type a Password");
+    }
+    else{
+
+      lblNewUserMessage.setText("Employee Details: \nName: " + user.getName() + "\n" + "Username: "
+          + user.getUsername() + "\n" + "Email: " + user.getEmail() + "\n" + "Password: " + user
+          .getPassword());
+
+      tabProductionLog.setDisable(false);
+      tabProductionLine.setDisable(false);
+      tabProduce.setDisable(false);
+      tabWelcome.setDisable(true);
+    }
   }
 
-  //List of products loaded from DB
+  /**
+   * Connects to the database.
+   */
+  public static void connect() {
 
-  final ObservableList<Product> productLine = FXCollections.observableArrayList();
-
-
-  public static void connect(){
-
+    //Properties
     final String JDBC_DRIVER = "org.h2.Driver";
     final String DB_URL = "jdbc:h2:./res/production";
 
@@ -173,33 +287,53 @@ public class ProdController {
 
   }
 
-  public static void closeDb(){
+  /**
+   * Closes connection to the database.
+   */
+  public static void closeDb() {
 
+    //Closes the database connection
     try {
       conn.close();
     } catch (SQLException exception) {
       exception.printStackTrace();
     }
   }
+
+  /**
+   * Handles the add product button being pressed.
+   */
   @FXML
   void addProduct() {
-    connectToDb();
+
+    //Connects to the Product database
+    connectToProductDb();
+
     System.out.println("Product Added");
 
+    //Loads the products
     loadProductList();
   }
 
+  /**
+   * Handles the record production button being pressed.
+   */
   @FXML
   void recordProduction() {
     System.out.println("Product Recorded");
 
+    //Clears the text area
     txtAreaProductLog.clear();
+
+    //Gets the user selection both product & quantity
     Product prodRecord = produceView.getSelectionModel().getSelectedItem();
     int quantity = cmbQuantity.getSelectionModel().getSelectedIndex();
+
     ObservableList<ProductionRecord> productionRun = FXCollections.observableArrayList();
 
     int sameTypeAmount = getSameProductTypeAmount(prodRecord.getId());
 
+    //Adds the product to the database based on the quantity selected
     for (int i = 0; i <= quantity; i++) {
       productionRun.add(new ProductionRecord(prodRecord, ++sameTypeAmount));
     }
@@ -207,8 +341,12 @@ public class ProdController {
     loadProductionLog();
   }
 
+  /**
+   * Initializes the Production GUI.
+   */
   public void initialize() {
 
+    //Initial tab settings
     tabProductionLog.setDisable(true);
     tabProductionLine.setDisable(true);
     tabProduce.setDisable(true);
@@ -233,11 +371,15 @@ public class ProdController {
     loadProductionLog();
   }
 
+  /**
+   * Loads the product to production line & produce.
+   */
   public void loadProductList() {
 
     //Clears the Observable List so it doesn't duplicate the products
     productLine.clear();
 
+    //Connects to the database
     connect();
 
     try {
@@ -247,7 +389,7 @@ public class ProdController {
       String selectSql = "Select * FROM Product";
       ResultSet rs = stmt.executeQuery(selectSql);
 
-// while loop to all data in DB
+      // while loop to all data in DB
       while (rs.next()) {
 
         int id = rs.getInt(1);
@@ -266,7 +408,10 @@ public class ProdController {
         Product product = new Product(id, name, manufacturer, type);
         productLine.add(product);
 
+        //Adds the products to the table view
         existingProduct.setItems(productLine);
+
+        //Adds the products to the produce list view
         produceView.setItems(productLine);
 
       }
@@ -280,7 +425,12 @@ public class ProdController {
     }
   }
 
-  public void connectToDb() {
+  /**
+   * Connects to the product database to insert & select products.
+   */
+  public void connectToProductDb() {
+
+    //Connects to the database
     connect();
 
     try {
@@ -305,12 +455,13 @@ public class ProdController {
           + " FROM Product";
       ResultSet rs = stmt.executeQuery(selectSql);
 
-// while loop to all data in DB
+      // while loop to all data in DB
       while (rs.next()) {
         System.out.println(rs.getString(1));
         System.out.println(rs.getString(2));
         System.out.println(rs.getString(3));
       }
+
       // STEP 4: Clean-up environment
       stmt.close();
       closeDb();
@@ -320,6 +471,9 @@ public class ProdController {
     }
   }
 
+  /**
+   * Adds data to the Observable List(Table columns).
+   */
   public void setupProductLineTable() {
 
     // adds info to ObservableList
@@ -329,8 +483,14 @@ public class ProdController {
 
   }
 
+  /**
+   * Inserts a product to the production record database.
+   *
+   * @param productionRun list of production records created
+   */
   public void addToProductionDB(ObservableList<ProductionRecord> productionRun) {
 
+    //Connects to the database
     connect();
 
     try {
@@ -338,8 +498,7 @@ public class ProdController {
       //STEP 3: Execute a query
       Statement stmt = conn.createStatement();
 
-      //int productionNum = (int) recordDB.;
-
+      //Inserts products to the database
       for (ProductionRecord productionRecord : productionRun) {
 
         final String sql = "INSERT INTO ProductionRecord(product_id, serial_num, date_produced) "
@@ -352,6 +511,7 @@ public class ProdController {
         ps.executeUpdate();
       }
 
+      //Clean up environment(Close connection to the database)
       stmt.close();
       closeDb();
 
@@ -360,21 +520,30 @@ public class ProdController {
     }
   }
 
+  /**
+   * Loads a list of all production records in database.
+   *
+   * @return list of production records from database
+   */
   public ArrayList<ProductionRecord> loadProductionLog() {
 
+    //Connects to the database
     connect();
+
     ArrayList<ProductionRecord> records = new ArrayList<>();
 
     try {
       //STEP 3: Execute a query
       Statement stmt = conn.createStatement();
 
-      //int productionNum = (int) recordDB.;
+      //Selects all products from the database
       final String sql = "SELECT * FROM ProductionRecord";
       PreparedStatement ps = conn.prepareStatement(sql);
 
       ResultSet rs = ps.executeQuery();
-      while(rs.next()){
+
+      //Gets properties
+      while (rs.next()) {
 
         //get properties from the result set
         int prodsNum = rs.getInt(1);
@@ -387,6 +556,7 @@ public class ProdController {
 
       showProduction(records);
 
+      //Close connection to the database
       stmt.close();
       closeDb();
 
@@ -396,17 +566,30 @@ public class ProdController {
     return records;
   }
 
-  // Reverses Password
-  public static String reverseString(String pw){
+  /**
+   * Reverses the password.
+   *
+   * @param pw gets the password
+   * @return string of the password reversed
+   */
+  public static String reverseString(String pw) {
 
+    // Reverses Password
     return (pw.length() <= 1) ? pw : pw.substring(pw.length() - 1)
         + reverseString(pw.substring(0, pw.length() - 1));
   }
 
-  public static String getPwFromFile(){
+  /**
+   * Gets the password from the file.
+   *
+   * @return string of the password in file
+   */
+  public static String getPwFromFile() {
 
-    try{
-      BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\ffafu\\OneDrive - Florida Gulf Coast University\\Fall 2020 Courses\\OOP Work\\JDK Projects\\ProductionProject\\src\\main\\java\\password DB.txt"));
+    //Gets database password from file
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(
+          "C:\\Users\\ffafu\\OneDrive - Florida Gulf Coast University\\Fall 2020 Courses\\OOP Work\\JDK Projects\\ProductionProject\\src\\main\\java\\password DB.txt"));
 
       StringBuilder content = new StringBuilder();
       String line;
@@ -418,21 +601,34 @@ public class ProdController {
 
       return content.toString().trim();
 
-    } catch(IOException ex){
+    } catch (IOException ex) {
       return null;
     }
   }
 
-  public void showProduction(ArrayList<ProductionRecord> record){
+  /**
+   * Shows production records in the text area.
+   *
+   * @param record list of production records created
+   */
+  public void showProduction(ArrayList<ProductionRecord> record) {
 
+    //Adds products to the text area
     for (ProductionRecord productionRecord : record) {
 
       txtAreaProductLog.appendText(productionRecord.toString());
     }
   }
 
-  public Product getProductName(int id){
+  /**
+   * Gets the product id.
+   *
+   * @param id gets the id
+   * @return Product with the specified id
+   */
+  public Product getProductName(int id) {
 
+    //Connects to the database
     connect();
 
     try {
@@ -444,15 +640,16 @@ public class ProdController {
 
       ResultSet rs = ps.executeQuery();
 
-      if(rs.next()) {
+      //Gets properties
+      if (rs.next()) {
 
         // Get properties
         String name = rs.getString("product_name");
 
         ItemType type = null;
 
-        for(ItemType item: ItemType.values()){
-          if(String.valueOf(item).equals(rs.getString("item_type"))){
+        for (ItemType item : ItemType.values()) {
+          if (String.valueOf(item).equals(rs.getString("item_type"))) {
             type = item;
           }
         }
@@ -472,8 +669,15 @@ public class ProdController {
     return null;
   }
 
-  public int getSameProductTypeAmount(int id){
+  /**
+   * Gets the id of the same product type(compares id).
+   *
+   * @param id gets the id
+   * @return int id of the product
+   */
+  public int getSameProductTypeAmount(int id) {
 
+    //Connects to the database
     connect();
 
     try {
@@ -485,16 +689,17 @@ public class ProdController {
 
       ResultSet rs = ps.executeQuery();
 
-      while(rs.next()) {
+      // Get properties
+      while (rs.next()) {
 
-        // Get properties
         String serialNum = rs.getString("serial_num");
 
         String subSerialNum = serialNum.substring(5);
         int sameTypeAmount = Integer.parseInt(subSerialNum);
 
-        }
+      }
 
+      //Close connection to the database
       ps.close();
       closeDb();
 
@@ -504,8 +709,15 @@ public class ProdController {
     return 0;
   }
 
+  /**
+   * Gets user from Employee database.
+   *
+   * @param userName gets the name of the user
+   * @return Employee if found on database
+   */
   public Employee getUserInDb(String userName) {
 
+    //Connects to the database
     connect();
 
     try {
@@ -517,7 +729,8 @@ public class ProdController {
 
       ResultSet rs = ps.executeQuery();
 
-      if(rs.next()){
+      //Get properties
+      if (rs.next()) {
 
         String name = rs.getString("name");
         String pw = rs.getString("password");
@@ -525,17 +738,22 @@ public class ProdController {
         return new Employee(name, pw);
       }
 
+      //Close connection to the database
       ps.close();
       closeDb();
 
-    } catch(SQLException e){
+    } catch (SQLException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public void userRegistration(){
+  /**
+   * Registers a user to the Employee database.
+   */
+  public void userRegistration() {
 
+    //Connects to the database
     connect();
 
     try {

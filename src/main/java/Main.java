@@ -5,15 +5,30 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * The Main class of the Production application.
+ *
+ * @author Fernando Orellana
+ */
 public class Main extends Application {
 
-  //private LoginController loginControl;
-  //private static ProdController mainControl;
-
+  /**
+   * Launches the application.
+   *
+   * @param args command-line arguments
+   */
   public static void main(String[] args) {
     launch(args);
   }
 
+  /**
+   * The starting point for the application.
+   *
+   * <p>
+   *   Loads the fxml file and creates the GUI
+   * </p>
+   * @param primaryStage the root JavaFX
+   */
   @Override
   public void start(Stage primaryStage) throws IOException {
 
