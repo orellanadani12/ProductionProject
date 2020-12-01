@@ -13,12 +13,12 @@ Returning User:
 
 New User:
 
-![](2 New User.gif)
+![](2%20New%20User.gif)
 
 Returning User Error Checking:
 
-![](3 Returning User Error Checking.gif)
+![](3%20Returning%20User%20Error%20Checking.gif)
 
 New User Error Checking:
 
-![](4 New User Error Checking.gif)
+![](4%20New%20User%20Error%20Checking.gif)
