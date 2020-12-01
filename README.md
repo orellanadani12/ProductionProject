@@ -25,3 +25,9 @@ New User Error Checking:
 
 ## Documentation
 [Production Project JavaDocs]( https://orellanadani12.github.io/ProductionProject/)
+
+##Diagrams
+
+Production Project Diagrams:
+
+![Diagrams](https://github.com/orellanadani12/ProductionProject/tree/master/Diagrams)
