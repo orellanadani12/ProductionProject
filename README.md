@@ -28,6 +28,10 @@ New User Error Checking:
 
 ##Diagrams
 
-Production Project Diagrams:
+Production Project Class Diagrams:
 
-![Diagrams](https://github.com/orellanadani12/ProductionProject/tree/master/Diagrams)
+![Class Diagrams](https://github.com/orellanadani12/ProductionProject/tree/master/Diagrams/Class%20Diagram%20Updated.png)
+
+Production Project Database Diagrams:
+
+![Database Diagrams](https://github.com/orellanadani12/ProductionProject/tree/master/Diagrams/DB%20Diagram.png)
