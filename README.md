@@ -7,13 +7,13 @@ production management system.
 
 # Demonstration
 Returning User:
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user.gif)
+!(PP returning user.gif)
 
 New User:
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
+!(https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
 
 Returning User Error Checking:
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
+!(https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
 
 New User Error Checking:
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
+!(https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
