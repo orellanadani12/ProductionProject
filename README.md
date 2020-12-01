@@ -9,7 +9,7 @@ production management system.
 
 Returning User:
 
-![](1 Returning User.gif)
+![](1%20Returning%20User.gif)
 
 New User:
 
