@@ -9,16 +9,16 @@ production management system.
 
 Returning User:
 
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user.gif)
+![](1 Returning User.gif)
 
 New User:
 
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
+![](2 New User.gif)
 
 Returning User Error Checking:
 
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
+![](3 Returning User Error Checking.gif)
 
 New User Error Checking:
 
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
+![](4 New User Error Checking.gif)
