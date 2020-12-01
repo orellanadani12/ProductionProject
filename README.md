@@ -6,14 +6,18 @@ class in the Fall 2020 semester. The program is a JavaFX application that acts a
 production management system.
 
 # Demonstration
-Returning User:
-!(PP returning user.gif)
+- Returning User:
 
-New User:
-!(https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
+![](PP returning user.gif)
 
-Returning User Error Checking:
-!(https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
+- New User:
 
-New User Error Checking:
-!(https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
+![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
+
+- Returning User Error Checking:
+
+![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
+
+- New User Error Checking:
+
+![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
