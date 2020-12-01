@@ -7,7 +7,10 @@ production management system.
 
 # Demonstration
 
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user.gif)
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
-![](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
+![Returning User](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user.gif)
+
+![New User](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user.gif)
+
+![Returning User Error Checking](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20returning%20user%20errors%20checking.gif)
+
+![New User Error Checking](https://github.com/orellanadani12/ProductionProject/blob/master/PP%20gif%20new%20user%20errors%20checking.gif)
