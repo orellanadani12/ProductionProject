@@ -30,8 +30,8 @@ New User Error Checking:
 
 Production Project Class Diagrams:
 
-![Class Diagrams](https://github.com/orellanadani12/ProductionProject/tree/master/Diagrams/Class%20Diagram%20Updated.png)
+![Class Diagrams](Diagrams/Class%20Diagram%20Updated.png)
 
 Production Project Database Diagrams:
 
-![Database Diagrams](https://github.com/orellanadani12/ProductionProject/tree/master/Diagrams/DB%20Diagram.png)
+![Database Diagrams](Diagrams/DB%20Diagram.png)
