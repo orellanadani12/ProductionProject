@@ -7,6 +7,8 @@ production management system.
 
 # Demonstration
 
-![Returning User](PP gif returning user.gif)
+
+
+
 
 
