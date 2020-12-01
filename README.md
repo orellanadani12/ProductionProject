@@ -24,4 +24,4 @@ New User Error Checking:
 ![](4%20New%20User%20Error%20Checking.gif)
 
 ## Documentation
-[Production Project JavaDocs](orellanadani12.github.io/ProductionProject/)
+[Production Project JavaDocs](https://github.com/orellanadani12/ProductionProject/blob/master/docs/index.html)
